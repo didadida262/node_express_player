@@ -14,7 +14,7 @@ app.use(cors({
 }));
 
 // 视频文件路径，可替换为实际视频路径
-const videoPath = path.join(__dirname, 'test.mp4');
+// const videoPath = path.join(__dirname, 'test.mp4');
 // 深度搜索
 async function deepreadDirectory(dirPath) {
     try {
@@ -51,18 +51,13 @@ async function readDirectory(dirPath) {
         // 注意这里使用 fs.promises.readdir
         const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
         const files = [];
-
         for (const entry of entries) {
             const fullPath = path.join(dirPath, entry.name);
-
-            // if (entry.isDirectory()) {
-            //     const subFiles = await readDirectory(fullPath);
-            //     files.push(...subFiles);
             const fileType = path.extname(entry.name).replace('.', '') || 'unknown';
             files.push({
                 name: entry.name,
                 type: entry.isDirectory() ? 'dir' : fileType,
-                fullPath: fullPath
+                path: fullPath
             });
         }
 
@@ -74,13 +69,13 @@ async function readDirectory(dirPath) {
 }
 
 app.get('/getFiles', async (req, res) => {
-    const files = await readDirectory('D:\\RESP');
-    console.log('files>>>', files)
+    const files = await readDirectory(req.query.path || 'D:\\RESP');
     res.json(files);
 })
 
+
 app.get('/video', (req, res) => {
-    console.log('接收到请求>>>')
+    const videoPath = req.query.path || 'test.mp4'
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range;
