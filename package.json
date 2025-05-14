@@ -4,6 +4,7 @@
   "description": "node_express_player: 适配 project_react_vite_ts_player",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

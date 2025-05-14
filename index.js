@@ -1,11 +1,55 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors'); // 引入 CORS 模块
+
 const app = express();
 const PORT = 3001;
 
+// 使用 CORS 中间件
+app.use(cors({
+    origin: '*', // 允许所有域名进行跨域调用
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // 允许的 HTTP 请求方法
+    credentials: true // 允许携带凭证（如 cookies）
+}));
+
 // 视频文件路径，可替换为实际视频路径
 const videoPath = path.join(__dirname, 'test.mp4');
+
+async function readDirectory(dirPath) {
+    try {
+        // 注意这里使用 fs.promises.readdir
+        const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+        const files = [];
+
+        for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+
+            if (entry.isDirectory()) {
+                const subFiles = await readDirectory(fullPath);
+                files.push(...subFiles);
+            } else {
+                const fileType = path.extname(entry.name).replace('.', '') || 'unknown';
+                files.push({
+                    name: entry.name,
+                    type: fileType,
+                    fullPath: fullPath
+                });
+            }
+        }
+
+        return files;
+    } catch (err) {
+        console.error(`读取目录 ${dirPath} 时出错:`, err);
+        return [];
+    }
+}
+
+app.get('/getFiles', async (req, res) => {
+    const files = await readDirectory('D:\\RESP');
+    console.log('files>>>', files)
+    res.json(files);
+})
 
 app.get('/video', (req, res) => {
     console.log('接收到请求>>>')
@@ -43,4 +87,4 @@ app.get('/video', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-});    
+});
