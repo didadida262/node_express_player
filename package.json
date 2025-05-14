@@ -1,0 +1,42 @@
+{
+  "name": "node_express_player",
+  "version": "1.0.0",
+  "description": "node_express_player: 适配 project_react_vite_ts_player",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "blob-polyfill": "^6.0.20211015",
+    "busboy": "^0.3.1",
+    "dayjs": "^1.11.4",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^2.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.4",
+    "mysql": "^2.18.1",
+    "nodejs-websocket": "^1.7.2",
+    "nodemon": "^2.0.15",
+    "object-sizeof": "^1.6.3",
+    "pm2": "^5.3.0",
+    "ws": "^8.18.2"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^16.1.0",
+    "@types/express": "^5.0.1",
+    "@types/ws": "^8.18.1",
+    "cors": "^2.8.5",
+    "typescript": "^5.1.6",
+    "uuid": "^11.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/didadida262/node_express_player.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/didadida262/node_express_player/issues"
+  },
+  "homepage": "https://github.com/didadida262/node_express_player#readme"
+}
