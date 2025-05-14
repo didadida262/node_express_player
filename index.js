@@ -15,8 +15,8 @@ app.use(cors({
 
 // 视频文件路径，可替换为实际视频路径
 const videoPath = path.join(__dirname, 'test.mp4');
-
-async function readDirectory(dirPath) {
+// 深度搜索
+async function deepreadDirectory(dirPath) {
     try {
         // 注意这里使用 fs.promises.readdir
         const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
@@ -36,6 +36,34 @@ async function readDirectory(dirPath) {
                     fullPath: fullPath
                 });
             }
+        }
+
+        return files;
+    } catch (err) {
+        console.error(`读取目录 ${dirPath} 时出错:`, err);
+        return [];
+    }
+}
+
+// 一级扫描
+async function readDirectory(dirPath) {
+    try {
+        // 注意这里使用 fs.promises.readdir
+        const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+        const files = [];
+
+        for (const entry of entries) {
+            const fullPath = path.join(dirPath, entry.name);
+
+            // if (entry.isDirectory()) {
+            //     const subFiles = await readDirectory(fullPath);
+            //     files.push(...subFiles);
+            const fileType = path.extname(entry.name).replace('.', '') || 'unknown';
+            files.push({
+                name: entry.name,
+                type: entry.isDirectory() ? 'dir' : fileType,
+                fullPath: fullPath
+            });
         }
 
         return files;
