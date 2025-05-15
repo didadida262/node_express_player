@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors'); // 引入 CORS 模块
+const mime = require('mime-types'); // 需要安装：npm install mime-types
+
 
 const app = express();
 const PORT = 3001;
@@ -75,10 +77,13 @@ app.get('/getFiles', async (req, res) => {
 
 
 app.get('/video', (req, res) => {
-    const videoPath = req.query.path || 'test.mp4'
+    const videoPath = req.query.path
     const stat = fs.statSync(videoPath);
     const fileSize = stat.size;
     const range = req.headers.range;
+    const contentType = mime.contentType(path.extname(videoPath)) || 'application/octet-stream';
+    console.log('contentType>>', contentType)
+
 
     if (range) {
         const parts = range.replace(/bytes=/, '').split('-');
@@ -93,7 +98,7 @@ app.get('/video', (req, res) => {
             'Content-Range': `bytes ${start}-${end}/${fileSize}`,
             'Accept-Ranges': 'bytes',
             'Content-Length': chunksize,
-            'Content-Type': 'video/mp4',
+            'Content-Type': contentType,
         };
 
         res.writeHead(206, head);
@@ -101,7 +106,7 @@ app.get('/video', (req, res) => {
     } else {
         const head = {
             'Content-Length': fileSize,
-            'Content-Type': 'video/mp4',
+            'Content-Type': contentType,
         };
         res.writeHead(200, head);
         fs.createReadStream(videoPath).pipe(res);
