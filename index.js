@@ -55,7 +55,7 @@ async function readDirectory(dirPath) {
         const files = [];
         for (const entry of entries) {
             const fullPath = path.join(dirPath, entry.name);
-            const fileType = path.extname(entry.name).replace('.', '') || 'unknown';
+            const fileType = mime.contentType(path.extname(entry.name)) || 'application/octet-stream';
             files.push({
                 name: entry.name,
                 type: entry.isDirectory() ? 'dir' : fileType,
